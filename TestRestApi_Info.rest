@@ -1,0 +1,7 @@
+@URL=http://localhost:8080/api/infos
+
+###*************** Get All Infos*****************
+GET {{URL}}
+
+###************* Get One Info by Id ************* 
+GET {{URL}}/2
