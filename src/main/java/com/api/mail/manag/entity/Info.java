@@ -29,10 +29,10 @@ public class Info {
 	private String title;
 
 	@Column(name = "firstName", length = 20)
-	private String firstName;
+	private String firstName; // pérnom de client
 
 	@Column(name = "lastName", length = 20)
-	private String lastName;
+	private String lastName; // nom de client
 
 	@Column(name = "phone", length = 15)
 	private String phone;
