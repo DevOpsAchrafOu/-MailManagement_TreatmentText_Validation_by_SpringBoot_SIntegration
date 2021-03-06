@@ -12,10 +12,10 @@ import lombok.NoArgsConstructor;
 
 /* les attributs correspondent les Clés des e-mails*/
 
-@Entity(name = "ent_Info")
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor // pour gérer les getter, setter et les constructeurs automatique
+@Entity(name = "ent_Info")
 public class Info {
 
 	private static final long serialVersionUID = -6833354013338112648L;
