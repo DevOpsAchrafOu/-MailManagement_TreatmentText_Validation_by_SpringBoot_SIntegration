@@ -18,10 +18,10 @@ public class InfoServiceImpl implements InfoService {
 
 	// Page'interface' de SpringDataJpa qui fournit qui fournit des attribues
 	@Override
-	public Page<Info> getInfos(short page, short size) {
+	public Page<Info> getInfos(short currentPage, short size) {
 
 		// (+) pour créer une Pageable instance; on l'utiliser l'PageRequest
-		Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+		Pageable pageable = PageRequest.of(currentPage, size, Sort.by("id").descending());
 		return infoRepository.findAll(pageable);
 	}
 
