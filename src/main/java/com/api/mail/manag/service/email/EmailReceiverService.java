@@ -1,4 +1,4 @@
-package com.api.mail.manag.service;
+package com.api.mail.manag.service.email;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +24,10 @@ public class EmailReceiverService {
 
 		String subject = mimeMessage.getSubject().toLowerCase();
 
-		// (+) filtre des Email par subject
+		// (+) transférer les email de subject contient "traiter" vers étape suivant
 		if (subject.contains("traiter")) {
 			// Text Processing
-			extractInfoByListMail(getEmailObjects(mimeMessage));
+			extractInfoByListMailAndSaveWithValidation(getEmailObjects(mimeMessage));
 		}
 
 	}
@@ -89,8 +89,8 @@ public class EmailReceiverService {
 		return result;
 	}
 
-	// Extract Info By List of Mail
-	private void extractInfoByListMail(List<EmailObject> listEmail) {
+	// Extract Info By List of Mail And Save With Validation
+	private void extractInfoByListMailAndSaveWithValidation(List<EmailObject> listEmail) {
 
 		listEmail.forEach(x -> System.out.println("item => " + x));
 	}
