@@ -58,7 +58,7 @@ public class EmailReceiverService {
 
 			EmailObject emailContent = new EmailObject();
 			emailContent.setBody(content.toString());
-			emailContent.setEmailTo(emialFrom);
+			emailContent.setEmailFrom(emialFrom);
 			result.add(emailContent);
 			return result;
 		}
@@ -83,7 +83,7 @@ public class EmailReceiverService {
 				String contentMail = content.toString();
 				EmailObject at = new EmailObject();
 				at.setBody(contentMail);
-				at.setEmailTo(email);
+				at.setEmailFrom(email);
 				result.add(at);
 				return result;
 			} else {
@@ -114,6 +114,7 @@ public class EmailReceiverService {
 
 			// (+) Key/Value to Info object
 			Info info = MassageTextProcessorService.InfoFromMapToObjet(infoKeyValue);
+			info.setEmailFrom(mail.getEmailFrom());
 
 			// (+) save in BD
 			InfoRepository.save(info);
