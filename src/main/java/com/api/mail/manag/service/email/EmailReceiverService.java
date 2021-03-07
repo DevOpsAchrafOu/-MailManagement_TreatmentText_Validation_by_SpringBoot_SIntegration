@@ -1,6 +1,9 @@
 package com.api.mail.manag.service.email;
 
+import static com.api.mail.manag.constant.PatternsInitialise.patternsInitialise;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.mail.BodyPart;
@@ -8,14 +11,23 @@ import javax.mail.Multipart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.messaging.Message;
 
+import com.api.mail.manag.dao.InfoRepository;
 import com.api.mail.manag.entity.EmailObject;
+import com.api.mail.manag.entity.Info;
 
 @MessageEndpoint
 public class EmailReceiverService {
+
+	@Autowired
+	private MassageTextProcessorService MassageTextProcessorService;
+
+	@Autowired
+	private InfoRepository InfoRepository;
 
 	// Fonction pour consommer de message et traiter
 	@ServiceActivator(inputChannel = "mailChannel")
@@ -26,7 +38,7 @@ public class EmailReceiverService {
 
 		// (+) transférer les email de subject contient "traiter" vers étape suivant
 		if (subject.contains("traiter")) {
-			// Text Processing
+			// (+) extract info by listMail and save with validation each feild
 			extractInfoByListMailAndSaveWithValidation(getEmailObjects(mimeMessage));
 		}
 
@@ -89,10 +101,26 @@ public class EmailReceiverService {
 		return result;
 	}
 
-	// Extract Info By List of Mail And Save With Validation
+	// extract info by listMail and save with validation each feild
 	private void extractInfoByListMailAndSaveWithValidation(List<EmailObject> listEmail) {
 
-		listEmail.forEach(x -> System.out.println("item => " + x));
+		listEmail.forEach(mail -> {
+
+			System.out.println("****** Email received and passed the first filter ******");
+
+			// (+) traitement de texte et get Key/Value
+			HashMap<String, String> infoKeyValue = MassageTextProcessorService.extractInfoByPatterns(mail.getBody(),
+					patternsInitialise());
+
+			// (+) Key/Value to Info object
+			Info info = MassageTextProcessorService.InfoFromMapToObjet(infoKeyValue);
+
+			// (+) save in BD
+			InfoRepository.save(info);
+			System.out.println("*********** Email Received is Added ***********");
+
+		});
+
 	}
 
 }
