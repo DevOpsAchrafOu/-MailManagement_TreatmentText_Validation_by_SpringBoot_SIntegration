@@ -20,7 +20,7 @@ public class InfoRestController {
 	@Autowired
 	private InfoService infService;
 
-	/******************* Get All With Pagination ********************/
+	/** -------------------- Get All With Pagination -------------------- **/
 	// get http://localhost:8080/api/infos
 	// or get http://localhost:8080/api/infos?page=1&size=10
 	@GetMapping() // par défaul page=0 et size=10
@@ -29,7 +29,7 @@ public class InfoRestController {
 		return infService.getInfos(currentPage, size);
 	}
 
-	/*********************** Get By Id ****************************/
+	/** ----------------------- Get By Id ----------------------- **/
 	// get http://localhost:8080/api/infos/2
 	@GetMapping(value = "/{id}")
 	public Info getDemandById(@PathVariable Long id) {

@@ -19,6 +19,7 @@ import org.springframework.messaging.Message;
 import com.api.mail.manag.dao.InfoRepository;
 import com.api.mail.manag.entity.EmailObject;
 import com.api.mail.manag.entity.Info;
+import com.api.mail.manag.service.ValidationFieldsOfInfoService;
 
 @MessageEndpoint
 public class EmailReceiverService {
@@ -28,6 +29,9 @@ public class EmailReceiverService {
 
 	@Autowired
 	private InfoRepository InfoRepository;
+
+	@Autowired
+	private ValidationFieldsOfInfoService validationFieldsOfInfoService;
 
 	// Fonction pour consommer de message et traiter
 	@ServiceActivator(inputChannel = "mailChannel")
@@ -78,7 +82,8 @@ public class EmailReceiverService {
 		List<EmailObject> result = new ArrayList<EmailObject>();
 		Object content = bodyPart.getContent();
 
-		if (content instanceof String) {// contenu est String
+		// (+) si contenu est String
+		if (content instanceof String) {
 			if (bodyPart.isMimeType("text/plain")) {
 				String contentMail = content.toString();
 				EmailObject at = new EmailObject();
@@ -91,7 +96,8 @@ public class EmailReceiverService {
 			}
 		}
 
-		if (content instanceof Multipart) {// pour plisieurs fichier
+		// (+) si pour plisieurs fichier
+		if (content instanceof Multipart) {
 			Multipart multipart = (Multipart) content;
 			for (int i = 0; i < multipart.getCount(); i++) {
 				BodyPart part = multipart.getBodyPart(i);
@@ -115,6 +121,9 @@ public class EmailReceiverService {
 			// (+) Key/Value to Info object
 			Info info = MassageTextProcessorService.InfoFromMapToObjet(infoKeyValue);
 			info.setEmailFrom(mail.getEmailFrom());
+
+			// (+) les messages d'erreur de validation de chaque champ non valide
+			System.out.println(validationFieldsOfInfoService.errorMessagesOfEachInvalidField(info));
 
 			// (+) save in BD
 			InfoRepository.save(info);
