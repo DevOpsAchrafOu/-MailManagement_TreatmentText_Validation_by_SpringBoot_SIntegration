@@ -1,5 +1,7 @@
 package com.api.mail.manag.service.email;
 
+import static com.api.mail.manag.constant.ErrorMessagesAndInterfaceConstants.message5;
+import static com.api.mail.manag.constant.ErrorMessagesAndInterfaceConstants.styleEtoil;
 import static com.api.mail.manag.constant.PatternsInitialise.patternsInitialise;
 
 import java.util.ArrayList;
@@ -114,20 +116,45 @@ public class EmailReceiverService {
 
 			System.out.println("****** Email received and passed the first filter ******");
 
+			String msgVal = "";// messages de validation les info
+			Boolean isInvalidField = false;// true ;si les info non valider
+
 			// (+) traitement de texte et get Key/Value
 			HashMap<String, String> infoKeyValue = MassageTextProcessorService.extractInfoByPatterns(mail.getBody(),
 					patternsInitialise());
 
-			// (+) Key/Value to Info object
-			Info info = MassageTextProcessorService.InfoFromMapToObjet(infoKeyValue);
-			info.setEmailFrom(mail.getEmailFrom());
+			if (infoKeyValue != null) {
 
-			// (+) les messages d'erreur de validation de chaque champ non valide
-			System.out.println(validationFieldsOfInfoService.errorMessagesOfEachInvalidField(info));
+				// (+) Key/Value to Info object
+				Info info = MassageTextProcessorService.InfoFromMapToObjet(infoKeyValue);
+				info.setEmailFrom(mail.getEmailFrom());
 
-			// (+) save in BD
-			InfoRepository.save(info);
-			System.out.println("*********** Email Received is Added ***********");
+				// (+) ressembler les messages d'erreur de validation de chaque champ non valide
+				msgVal = validationFieldsOfInfoService.errorMessagesOfEachInvalidField(info);
+
+				// (+) si les info valider
+				if (msgVal.isEmpty()) {
+
+					// (+) save in BD
+					InfoRepository.save(info);
+					System.out.println("*********** Email Received is Added ***********");
+
+				} else {
+
+					// (+)si les info non valider; send mail de validation
+					isInvalidField = true;
+				}
+			} else {
+
+				msgVal = styleEtoil + message5;
+				// (+)si les info non valider; send mail de validation
+				isInvalidField = true;
+			}
+
+			// (+)si les info non valider; send mail de validation
+			if (isInvalidField) {
+				System.out.println("*********** Email Received is InValider ***********");
+			}
 
 		});
 
