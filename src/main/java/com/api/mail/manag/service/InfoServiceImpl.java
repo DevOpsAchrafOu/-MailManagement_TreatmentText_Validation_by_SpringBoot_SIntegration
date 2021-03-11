@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.api.mail.manag.dao.InfoRepository;
 import com.api.mail.manag.entity.Info;
+import com.api.mail.manag.exception.NotFoundElementException;
 
 @Service
 public class InfoServiceImpl implements InfoService {
@@ -35,7 +36,7 @@ public class InfoServiceImpl implements InfoService {
 		if (info.isPresent())
 			return info.get();
 
-		throw new RuntimeException("le Info n'existe pas pour Id : " + id);
+		throw new NotFoundElementException("le Info n'existe pas pour Id : " + id);
 	}
 
 }

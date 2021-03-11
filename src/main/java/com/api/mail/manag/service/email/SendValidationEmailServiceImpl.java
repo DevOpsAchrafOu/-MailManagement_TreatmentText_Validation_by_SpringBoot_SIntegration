@@ -23,9 +23,10 @@ import org.springframework.stereotype.Service;
 public class SendValidationEmailServiceImpl implements SendValidationEmailService {
 
 	/*
-	 * la bibliothèque springMail send email et il prend en charge les messages MIME
-	 * javaMail et spring Mail sont 2 support par Spring framwork(et similaire au
-	 * niveau implemantation)
+	 * config SendMail dans 'EmailConfiguration'
+	 *  la bibliothèque springMail send
+	 * email et il prend en charge les messages MIME javaMail et spring Mail sont 2
+	 * support par Spring framwork(et similaire au niveau implemantation)
 	 */
 	@Autowired
 	JavaMailSenderImpl mailSender;
