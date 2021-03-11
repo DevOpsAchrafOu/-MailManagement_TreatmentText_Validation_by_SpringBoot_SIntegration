@@ -4,11 +4,13 @@ import static com.api.mail.manag.constant.ErrorMessagesAndInterfaceConstants.mes
 import static com.api.mail.manag.constant.ErrorMessagesAndInterfaceConstants.styleEtoil;
 import static com.api.mail.manag.constant.PatternsInitialise.patternsInitialise;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.mail.BodyPart;
+import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -34,6 +36,9 @@ public class EmailReceiverService {
 
 	@Autowired
 	private ValidationFieldsOfInfoService validationFieldsOfInfoService;
+
+	@Autowired
+	private SendValidationEmailService sendValidationEmailService;
 
 	// Fonction pour consommer de message et traiter
 	@ServiceActivator(inputChannel = "mailChannel")
@@ -153,7 +158,15 @@ public class EmailReceiverService {
 
 			// (+)si les info non valider; send mail de validation
 			if (isInvalidField) {
-				System.out.println("*********** Email Received is InValider ***********");
+
+				try {
+					sendValidationEmailService.sendValidationEmail(msgVal, mail.getEmailFrom());
+					System.out.println("*********** Email Received is InValider ***********");
+				} catch (MessagingException | IOException e) {
+
+					e.printStackTrace();
+				}
+
 			}
 
 		});

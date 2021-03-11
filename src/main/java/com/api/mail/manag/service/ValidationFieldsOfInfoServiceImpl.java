@@ -118,35 +118,31 @@ public class ValidationFieldsOfInfoServiceImpl implements ValidationFieldsOfInfo
 		return field != null && !field.trim().isEmpty();// not null or empty
 	}
 
-//	validate field is Only Charactors
+	// validate field is Only Charactors
 	public boolean isOnlyCharactors(String field) {
 
 		return field.trim().matches("^[a-zA-Z\\s]+");
 	}
 
-//	peut contient des chiffres et des caractères(ou uniquement des caractères)
+	// peut contient des chiffres et des caractères(ou uniquement des caractères)
 	public boolean isOnlyCharactorsAndOrNumbres(String field) {
 
 		return field.trim().matches("^[a-zA-Z0-9\\s\\.]+");
 	}
 
-//	peut contient des chiffres et des caractères
-//	public boolean isOnlyCharactorsNumbres(String field) {
-//
-//		return field.trim().matches("(?!^[0-9\\s]*$)(?!^[a-zA-Z\\s]*$)^([a-zA-Z0-9\\s]{1,})$");
-//	}
-
-	public boolean isPhone(String field) {
-
-		return field.trim().matches("^0[5-7][0-9]{4,}");
-	}
-
+	// valider length
 	public boolean checkLength(String field, int len) {
 
 		return field.trim().length() >= len;
 	}
 
-	//
+	// commencer par 05/06/07
+	public boolean isPhone(String field) {
+
+		return field.trim().matches("^0[5-7][0-9]{4,}");
+	}
+
+	// méthode qui faire un processus pour être le message d'erreur bien ranger
 	public String deleteLastVirgule(String mot) {
 		// (+) pour détruire la dérinier Virgule dans le message
 		StringBuilder sb = new StringBuilder(mot);

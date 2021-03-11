@@ -16,6 +16,7 @@ import org.springframework.integration.config.EnableIntegration;
 import org.springframework.integration.dsl.MessageChannels;
 import org.springframework.integration.mail.ImapIdleChannelAdapter;
 import org.springframework.integration.mail.ImapMailReceiver;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.messaging.SubscribableChannel;
 
 @Configuration
@@ -64,7 +65,8 @@ public class EmailConfiguration {
 	/*
 	 * C'est le Channel par lequel les messages sont travers d'un système à un autre
 	 * et dans notre cas le Channel utiliser juste recevoire des e-mails et on a
-	 * utiliser un @ServiceActivator pour recevoire les e-mails
+	 * utiliser un @ServiceActivator(inputChannel = "mailChannel") pour recevoire
+	 * les e-mails
 	 */
 	@Bean
 	public SubscribableChannel mailChannel() {
@@ -77,6 +79,33 @@ public class EmailConfiguration {
 		imapIdleChannelAdapter.setOutputChannel(mailChannel());//
 		imapIdleChannelAdapter.afterPropertiesSet();
 		return imapIdleChannelAdapter;
+	}
+
+	/*
+	 * Config 'SendMail' à l'aide d'utilisation dépendance spring-mail et qui
+	 * indépendant de Spring-Intégration
+	 * 
+	 * SpringMail et JAvaMail sont l'envoi d'e-mails de la même manière car les 2
+	 * suporter par SpringBoot
+	 */
+	@Bean
+	public JavaMailSenderImpl mailSender() {
+
+		// create a mail sender par implemantation de class JavaMailSender
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp-mail.outlook.com");
+		mailSender.setPort(587);
+
+		Properties javaMailProperties = mailSender.getJavaMailProperties();
+		javaMailProperties.put("mail.smtp.starttls.enable", "true");
+		javaMailProperties.put("mail.smtp.auth", "true");
+		// (+) protocol utiliser pour tronsfére les données
+		javaMailProperties.put("mail.transport.protocol", "smtp");
+		javaMailProperties.put("mail.debug", "true");
+
+		mailSender.setJavaMailProperties(javaMailProperties);
+
+		return mailSender;
 	}
 
 }
